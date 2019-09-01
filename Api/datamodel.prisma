@@ -12,4 +12,11 @@ type User {
   resetToken: String
   resetTokenExpiration: Float
   permissions: [Permission] @scalarList(strategy: RELATION)
+  sessions: [Session]!
+}
+
+type Session {
+  id: ID! @id
+  users: [User!]! @relation(link: TABLE)
+  enabled: Boolean!
 }

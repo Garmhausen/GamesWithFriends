@@ -5,7 +5,8 @@ const router = express.Router();
 
 const query = require('./resolvers/Query');
 
-router.use('/account', require('./routes/account'));
+router.use('/account',  require('./routes/account'));
+router.use('/session',  require('./routes/session'));
 router.use('/user',     require('./routes/user'));
 router.use('/users',    require('./routes/users'));
 

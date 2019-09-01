@@ -3,7 +3,11 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateUser {
+/* GraphQL */ `type AggregateSession {
+  count: Int!
+}
+
+type AggregateUser {
   count: Int!
 }
 
@@ -14,6 +18,12 @@ type BatchPayload {
 scalar Long
 
 type Mutation {
+  createSession(data: SessionCreateInput!): Session!
+  updateSession(data: SessionUpdateInput!, where: SessionWhereUniqueInput!): Session
+  updateManySessions(data: SessionUpdateManyMutationInput!, where: SessionWhereInput): BatchPayload!
+  upsertSession(where: SessionWhereUniqueInput!, create: SessionCreateInput!, update: SessionUpdateInput!): Session!
+  deleteSession(where: SessionWhereUniqueInput!): Session
+  deleteManySessions(where: SessionWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -46,13 +56,176 @@ enum Permission {
 }
 
 type Query {
+  session(where: SessionWhereUniqueInput!): Session
+  sessions(where: SessionWhereInput, orderBy: SessionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Session]!
+  sessionsConnection(where: SessionWhereInput, orderBy: SessionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SessionConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   node(id: ID!): Node
 }
 
+type Session {
+  id: ID!
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  enabled: Boolean!
+}
+
+type SessionConnection {
+  pageInfo: PageInfo!
+  edges: [SessionEdge]!
+  aggregate: AggregateSession!
+}
+
+input SessionCreateInput {
+  id: ID
+  users: UserCreateManyWithoutSessionsInput
+  enabled: Boolean!
+}
+
+input SessionCreateManyWithoutUsersInput {
+  create: [SessionCreateWithoutUsersInput!]
+  connect: [SessionWhereUniqueInput!]
+}
+
+input SessionCreateWithoutUsersInput {
+  id: ID
+  enabled: Boolean!
+}
+
+type SessionEdge {
+  node: Session!
+  cursor: String!
+}
+
+enum SessionOrderByInput {
+  id_ASC
+  id_DESC
+  enabled_ASC
+  enabled_DESC
+}
+
+type SessionPreviousValues {
+  id: ID!
+  enabled: Boolean!
+}
+
+input SessionScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  enabled: Boolean
+  enabled_not: Boolean
+  AND: [SessionScalarWhereInput!]
+  OR: [SessionScalarWhereInput!]
+  NOT: [SessionScalarWhereInput!]
+}
+
+type SessionSubscriptionPayload {
+  mutation: MutationType!
+  node: Session
+  updatedFields: [String!]
+  previousValues: SessionPreviousValues
+}
+
+input SessionSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: SessionWhereInput
+  AND: [SessionSubscriptionWhereInput!]
+  OR: [SessionSubscriptionWhereInput!]
+  NOT: [SessionSubscriptionWhereInput!]
+}
+
+input SessionUpdateInput {
+  users: UserUpdateManyWithoutSessionsInput
+  enabled: Boolean
+}
+
+input SessionUpdateManyDataInput {
+  enabled: Boolean
+}
+
+input SessionUpdateManyMutationInput {
+  enabled: Boolean
+}
+
+input SessionUpdateManyWithoutUsersInput {
+  create: [SessionCreateWithoutUsersInput!]
+  delete: [SessionWhereUniqueInput!]
+  connect: [SessionWhereUniqueInput!]
+  set: [SessionWhereUniqueInput!]
+  disconnect: [SessionWhereUniqueInput!]
+  update: [SessionUpdateWithWhereUniqueWithoutUsersInput!]
+  upsert: [SessionUpsertWithWhereUniqueWithoutUsersInput!]
+  deleteMany: [SessionScalarWhereInput!]
+  updateMany: [SessionUpdateManyWithWhereNestedInput!]
+}
+
+input SessionUpdateManyWithWhereNestedInput {
+  where: SessionScalarWhereInput!
+  data: SessionUpdateManyDataInput!
+}
+
+input SessionUpdateWithoutUsersDataInput {
+  enabled: Boolean
+}
+
+input SessionUpdateWithWhereUniqueWithoutUsersInput {
+  where: SessionWhereUniqueInput!
+  data: SessionUpdateWithoutUsersDataInput!
+}
+
+input SessionUpsertWithWhereUniqueWithoutUsersInput {
+  where: SessionWhereUniqueInput!
+  update: SessionUpdateWithoutUsersDataInput!
+  create: SessionCreateWithoutUsersInput!
+}
+
+input SessionWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  users_every: UserWhereInput
+  users_some: UserWhereInput
+  users_none: UserWhereInput
+  enabled: Boolean
+  enabled_not: Boolean
+  AND: [SessionWhereInput!]
+  OR: [SessionWhereInput!]
+  NOT: [SessionWhereInput!]
+}
+
+input SessionWhereUniqueInput {
+  id: ID
+}
+
 type Subscription {
+  session(where: SessionSubscriptionWhereInput): SessionSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
@@ -64,6 +237,7 @@ type User {
   resetToken: String
   resetTokenExpiration: Float
   permissions: [Permission!]!
+  sessions(where: SessionWhereInput, orderBy: SessionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Session!]
 }
 
 type UserConnection {
@@ -80,10 +254,26 @@ input UserCreateInput {
   resetToken: String
   resetTokenExpiration: Float
   permissions: UserCreatepermissionsInput
+  sessions: SessionCreateManyWithoutUsersInput
+}
+
+input UserCreateManyWithoutSessionsInput {
+  create: [UserCreateWithoutSessionsInput!]
+  connect: [UserWhereUniqueInput!]
 }
 
 input UserCreatepermissionsInput {
   set: [Permission!]
+}
+
+input UserCreateWithoutSessionsInput {
+  id: ID
+  name: String!
+  email: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiration: Float
+  permissions: UserCreatepermissionsInput
 }
 
 type UserEdge {
@@ -116,6 +306,90 @@ type UserPreviousValues {
   permissions: [Permission!]!
 }
 
+input UserScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
+  resetToken: String
+  resetToken_not: String
+  resetToken_in: [String!]
+  resetToken_not_in: [String!]
+  resetToken_lt: String
+  resetToken_lte: String
+  resetToken_gt: String
+  resetToken_gte: String
+  resetToken_contains: String
+  resetToken_not_contains: String
+  resetToken_starts_with: String
+  resetToken_not_starts_with: String
+  resetToken_ends_with: String
+  resetToken_not_ends_with: String
+  resetTokenExpiration: Float
+  resetTokenExpiration_not: Float
+  resetTokenExpiration_in: [Float!]
+  resetTokenExpiration_not_in: [Float!]
+  resetTokenExpiration_lt: Float
+  resetTokenExpiration_lte: Float
+  resetTokenExpiration_gt: Float
+  resetTokenExpiration_gte: Float
+  AND: [UserScalarWhereInput!]
+  OR: [UserScalarWhereInput!]
+  NOT: [UserScalarWhereInput!]
+}
+
 type UserSubscriptionPayload {
   mutation: MutationType!
   node: User
@@ -141,6 +415,16 @@ input UserUpdateInput {
   resetToken: String
   resetTokenExpiration: Float
   permissions: UserUpdatepermissionsInput
+  sessions: SessionUpdateManyWithoutUsersInput
+}
+
+input UserUpdateManyDataInput {
+  name: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiration: Float
+  permissions: UserUpdatepermissionsInput
 }
 
 input UserUpdateManyMutationInput {
@@ -152,8 +436,45 @@ input UserUpdateManyMutationInput {
   permissions: UserUpdatepermissionsInput
 }
 
+input UserUpdateManyWithoutSessionsInput {
+  create: [UserCreateWithoutSessionsInput!]
+  delete: [UserWhereUniqueInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutSessionsInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutSessionsInput!]
+  deleteMany: [UserScalarWhereInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+}
+
+input UserUpdateManyWithWhereNestedInput {
+  where: UserScalarWhereInput!
+  data: UserUpdateManyDataInput!
+}
+
 input UserUpdatepermissionsInput {
   set: [Permission!]
+}
+
+input UserUpdateWithoutSessionsDataInput {
+  name: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiration: Float
+  permissions: UserUpdatepermissionsInput
+}
+
+input UserUpdateWithWhereUniqueWithoutSessionsInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutSessionsDataInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutSessionsInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutSessionsDataInput!
+  create: UserCreateWithoutSessionsInput!
 }
 
 input UserWhereInput {
@@ -235,6 +556,9 @@ input UserWhereInput {
   resetTokenExpiration_lte: Float
   resetTokenExpiration_gt: Float
   resetTokenExpiration_gte: Float
+  sessions_every: SessionWhereInput
+  sessions_some: SessionWhereInput
+  sessions_none: SessionWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]

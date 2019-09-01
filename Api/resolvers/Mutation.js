@@ -136,6 +136,63 @@ function updateUser(id, updates) {
     return prisma.updateUser({ where: { id }, data: updates });
 }
 
+function startNewSession(userId) {
+    const newSession = {
+        users: {
+            connect: { 
+                id: userId
+            }
+        },
+        enabled: true
+    };
+
+    return prisma.createSession(newSession);
+}
+
+async function joinSession(sessionId, userId) {
+    const session = await prisma.session({ id: sessionId });
+
+    if (!session) {
+        throw new Error("Session does not exist!");
+    }
+    if (!session.enabled) {
+        throw new Error("Session is disabled!");
+    }
+
+    return prisma.updateSession({
+        where: { id: sessionId },
+        data: {
+            users: {
+                connect: {
+                    id: userId
+                }
+            }
+        }
+    });
+}
+
+async function leaveSession(sessionId, userId) {
+    const session = await prisma.session({ id: sessionId });
+
+    if (!session) {
+        throw new Error("Session does not exist!");
+    }
+    if (!session.enabled) {
+        throw new Error("Session is disabled!");
+    }
+
+    return prisma.updateSession({
+        where: { id: sessionId },
+        data: {
+            users: {
+                disconnect: {
+                    id: userId
+                }
+            }
+        }
+    });
+}
+
 module.exports = {
     deleteUser,
     requestReset,
@@ -143,5 +200,8 @@ module.exports = {
     signin,
     signup,
     updatePermissions,
-    updateUser
+    updateUser,
+    startNewSession,
+    joinSession,
+    leaveSession
 };
