@@ -2,6 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
+const serverStartTime = Date.now();
 
 const query = require('./resolvers/Query');
 
@@ -13,11 +14,13 @@ router.use('/users',    require('./routes/users'));
 // GET /heartbeat
 router.get('/heartbeat', function(req, res) {
     console.log('GET /heartbeat'); // TODO: replace with actual logging
+    const now = Date.now();
 
     const response = {
-        name: 'tbd', // TODO: come up with a name for this thing
+        name: 'GamesWithFriends Api',
         vitals: {
-            
+            serverTime: now,
+            uptime: now - serverStartTime
         }
     }
 
