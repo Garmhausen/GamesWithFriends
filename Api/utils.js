@@ -6,6 +6,23 @@ exports.handleError = (error) => {
     return error.message;
 };
 
+exports.handleValidationErrors = (errors) => {
+    if (!errors.length) {
+        return;
+    } else {
+        const plural = errors.length > 1;
+        let message = `There ${plural ? `were ${errors.length} errors:` : `was an error:`} `;
+        errors.forEach((error, index) => {
+            if (index != errors.length - 1) {
+                message += error + ", ";
+            } else {
+                message += error + "."
+            }
+        });
+        throw new Error(message);
+    }
+}
+
 exports.hasPermission = (user, permissionsNeeded) => {
     if (!user) {
         throw new Error(`You must be logged in!`);
@@ -32,6 +49,9 @@ exports.slimUser = `
         id
         email
         name
+        sessions {
+            id
+        }
         permissions
     }
 `;
