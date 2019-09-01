@@ -1,4 +1,4 @@
-# node_express_prisma_graphql
+# GamesWithFriends Api
 
 ## install prisma
 - brew tap prisma/prisma
