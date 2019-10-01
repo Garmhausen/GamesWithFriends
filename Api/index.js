@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
 const { prisma } = require('./prisma');
 const routes = require('./routes');
@@ -10,14 +11,21 @@ const routes = require('./routes');
 const app = express();
 
 // ------ BEGIN MIDDLEWARE ------
+const corsOptions = {
+    origin: process.env.FRONTEND_URI,
+    optionsSuccessStatus: 200,
+    credentials: true
+}
+app.use(cors(corsOptions));
+
 app.use(cookieParser());
 
 // add userId to requests
 app.use((req, res, next) => {
-    const { token } = req.cookies;
+    const { GWFToken } = req.cookies;
 
-    if (token) {
-        const { userId } = jwt.verify(token, process.env.TOKEN_SECRET);
+    if (GWFToken) {
+        const { userId } = jwt.verify(GWFToken, process.env.TOKEN_SECRET);
         req.userId = userId;
     }
 

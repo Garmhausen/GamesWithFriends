@@ -36,9 +36,9 @@ exports.hasPermission = (user, permissionsNeeded) => {
 };
 
 exports.signInUser = (userId, res) => {
-    const token = jwt.sign({ userId }, process.env.TOKEN_SECRET);  // TODO: fix
+    const GWFToken = jwt.sign({ userId }, process.env.TOKEN_SECRET);  // TODO: fix
 
-    res.cookie('token', token, {
+    res.cookie('GWFToken', GWFToken, {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 365 // 1 year
     });

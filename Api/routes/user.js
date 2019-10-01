@@ -71,7 +71,7 @@ router.delete('/:id', async function(req, res) {
         }
         const result = await mutation.deleteUser(req.params.id);
         if (deletingSelf) {
-            res.clearCookie('token');
+            res.clearCookie('GWFToken');
         }
         response = ({ message: "success" });
     } catch (error) {
