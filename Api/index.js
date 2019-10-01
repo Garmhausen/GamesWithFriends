@@ -22,10 +22,10 @@ app.use(cookieParser());
 
 // add userId to requests
 app.use((req, res, next) => {
-    const { token } = req.cookies;
+    const { GWFToken } = req.cookies;
 
-    if (token) {
-        const { userId } = jwt.verify(token, process.env.TOKEN_SECRET);
+    if (GWFToken) {
+        const { userId } = jwt.verify(GWFToken, process.env.TOKEN_SECRET);
         req.userId = userId;
     }
 
