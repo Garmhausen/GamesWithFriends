@@ -12,8 +12,13 @@ function retrieveUsers() {
     return prisma.users({});
 }
 
+function retrieveUserByEmail(email) {
+    return prisma.user({ email });
+}
+
 module.exports = {
     retrieveSession,
     retrieveUser,
     retrieveUsers,
+    retrieveUserByEmail
 }
