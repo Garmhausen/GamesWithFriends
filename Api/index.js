@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
 const { prisma } = require('./prisma');
 const routes = require('./routes');
@@ -10,6 +11,13 @@ const routes = require('./routes');
 const app = express();
 
 // ------ BEGIN MIDDLEWARE ------
+const corsOptions = {
+    origin: process.env.FRONTEND_URI,
+    optionsSuccessStatus: 200,
+    credentials: true
+}
+app.use(cors(corsOptions));
+
 app.use(cookieParser());
 
 // add userId to requests

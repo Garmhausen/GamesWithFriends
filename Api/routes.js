@@ -17,10 +17,11 @@ router.get('/heartbeat', function(req, res) {
     const now = Date.now();
 
     const response = {
-        name: 'GamesWithFriends Api',
+        name: 'GamesWithFriendsApi',
+        serverTime: now,
+        uptime: now - serverStartTime,
         vitals: {
-            serverTime: now,
-            uptime: now - serverStartTime
+            // vitals for dependencies (such as db service, prisma service, etc) go here
         }
     }
 
@@ -31,6 +32,10 @@ router.get('/heartbeat', function(req, res) {
 router.get('/me', async function(req, res) {
     console.log('GET /me');
     let response;
+
+    if (!req.userId) {
+        return res.status(400).json('Not logged in');
+    }
 
     try {
         response = await query.retrieveUser(req.userId).$fragment(`

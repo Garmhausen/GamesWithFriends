@@ -1,5 +1,7 @@
 # GamesWithFriends Api
 
+[Api Documentation](./api-documentation.md)
+
 ## install prisma
 - brew tap prisma/prisma
 - brew install prisma
