@@ -56,6 +56,12 @@ app.use(async (req, res, next) => {
 
 app.use(routes);
 
-app.listen(process.env.PORT || 3000, function() {
+// setup for socket.io
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+
+io.on('connection', () => { /* … */ });
+
+server.listen(process.env.PORT || 3000, function () {
     console.log(`Express server listening on port ${this.address().port} in ${app.settings.env} mode`);
 });
