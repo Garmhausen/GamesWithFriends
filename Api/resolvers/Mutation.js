@@ -3,7 +3,6 @@ const { promisify } = require('util');
 const { randomBytes } = require('crypto');
 const { transport, craftEmail } = require('../mail');
 const { prisma } = require('../prisma');
-const { handleValidationErrors } = require('../utils');
 
 function deleteUser(id) {
 
@@ -84,31 +83,6 @@ async function signin({ email, password }) {
 };
 
 async function signup(args) {
-
-    // TODO:  move validation to a higher layer and abstract to a helper,
-    //        maybe even use a library instead hand-rolling
-
-    // ---- Validation Begin ----
-    const errors = [];
-    if (!args.email) {
-        errors.push('no email received');
-    }
-    if (!args.name) {
-        errors.push('no name received');
-    }
-    if (!args.password) {
-        errors.push('no password received');
-    }
-    if (!args.confirmPassword) {
-        errors.push('no confirm password received');
-    }
-    if (args.confirmPassword && args.password && args.confirmPassword !== args.password) {
-        errors.push('passwords do not match');
-    }
-
-    handleValidationErrors(errors);
-    // ---- Validation End ----
-
     args.email = args.email.toLowerCase();  // lowercase all emails going into the db
     delete args.confirmPassword;
     const password = await bcrypt.hash(args.password, 10);
