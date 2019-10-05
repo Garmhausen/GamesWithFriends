@@ -47,4 +47,3 @@ exports.verifyLoggedIn = (req, res, next) => {
         return next();
     }
 };
-

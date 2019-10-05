@@ -3,9 +3,12 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const http = require('http');
+const sio = require('socket.io');
 
 const { prisma } = require('./prisma');
 const routes = require('./routes');
+const socketEventHandlers = require('./socket-event-handlers');
 
 // start app
 const app = express();
@@ -57,10 +60,10 @@ app.use(async (req, res, next) => {
 app.use(routes);
 
 // setup for socket.io
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-
-io.on('connection', () => { /* … */ });
+const server = http.createServer(app);
+const io = sio(server);
+const eventHandlers = socketEventHandlers(io);
+io.use(eventHandlers);
 
 server.listen(process.env.PORT || 3000, function () {
     console.log(`Express server listening on port ${this.address().port} in ${app.settings.env} mode`);

@@ -3,7 +3,6 @@ const { promisify } = require('util');
 const { randomBytes } = require('crypto');
 const { transport, craftEmail } = require('../mail');
 const { prisma } = require('../prisma');
-const { handleValidationErrors } = require('../utils');
 
 function deleteUser(id) {
 
