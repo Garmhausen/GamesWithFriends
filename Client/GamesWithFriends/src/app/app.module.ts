@@ -7,9 +7,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
+import { HomeComponent } from './home/home.component';
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
