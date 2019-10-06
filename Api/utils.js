@@ -27,6 +27,15 @@ exports.signInUser = (userId, res) => {
     });
 };
 
+exports.makeToken = (userId, res) => {
+    const token = {
+        userId,
+        expiration: 1000 * 60 * 60 * 24 * 365 // 1 year
+    }
+
+    return jwt.sign(token, process.env.TOKEN_SECRET); // TODO: fix
+}
+
 exports.slimUser = `
     {
         id

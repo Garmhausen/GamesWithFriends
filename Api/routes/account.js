@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
-const { handleError, signInUser, slimUser } = require('../utils');
+const { handleError, signInUser, makeToken, slimUser } = require('../utils');
 const query = require('../resolvers/Query');
 const mutation = require('../resolvers/Mutation');
 
@@ -72,8 +72,12 @@ router.post('/signin', async function(req, res) {
 
     try {
         const user = await mutation.signin(args);
-        signInUser(user.id, res);
-        response = { message: "success" };
+        const token = makeToken(user.id, res);
+        response = {
+            email: user.email,
+            name: user.name,
+            token: token
+        };
     } catch (error) {
         response = handleError(error);
         res.status(400); // Bad Request
